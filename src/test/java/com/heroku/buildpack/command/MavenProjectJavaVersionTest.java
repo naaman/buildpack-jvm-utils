@@ -31,6 +31,14 @@ public class MavenProjectJavaVersionTest {
     };
   }
 
+  @DataProvider
+  public Object[][] testBadPomFiles() {
+    return new Object[][] {
+      { getTestPom("MalformedPom") },
+      { getTestPom("EmptyPom") }
+    };
+  }
+
   @Test(dataProvider = "testPomFiles")
   public void testPom(File pomFile, String expectedVersion) throws NoSuchFieldException, IllegalAccessException, UnsupportedEncodingException {
     MavenProjectJavaVersion cmd = new MavenProjectJavaVersion();
@@ -38,6 +46,13 @@ public class MavenProjectJavaVersionTest {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     cmd.execute(out);
     assertEquals(new String(out.toByteArray()), expectedVersion);
+  }
+
+  @Test(dataProvider = "testBadPomFiles", expectedExceptions = RuntimeException.class)
+  public void badPomFilesShouldThrowRuntimeExecption(File badPom) throws NoSuchFieldException, IllegalAccessException {
+    MavenProjectJavaVersion cmd = new MavenProjectJavaVersion();
+    setCommandPomFile(cmd, badPom);
+    cmd.execute(new ByteArrayOutputStream());
   }
 
   @Test //(groups = "integration")
