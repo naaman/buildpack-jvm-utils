@@ -5,6 +5,7 @@ import com.beust.jcommander.ParameterException;
 import com.heroku.buildpack.command.BuildpackCommand;
 import com.heroku.buildpack.command.MavenProjectJavaVersion;
 
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 
@@ -41,10 +42,20 @@ public class BuildpackUtil {
         }
       }
     } catch (ParameterException e) {
+      try {
+        out.write((e.getMessage() + "\n").getBytes("UTF-8"));
+      } catch (IOException e1) {
+        throw new RuntimeException(e);
+      }
+      if (isVerbose(args)) {
+        e.printStackTrace(new PrintStream(out));
+      }
+    } catch (RuntimeException e) {
       if (isVerbose(args)) {
         e.printStackTrace(new PrintStream(out));
       }
     }
+
   }
 
   private boolean isVerbose(String... args) {
