@@ -25,8 +25,7 @@ public class BuildpackUtil {
 
   public void run(String... args) {
     JCommander jc = new JCommander();
-    MavenProjectJavaVersion mavenProjectJavaVersion = new MavenProjectJavaVersion();
-    jc.addCommand("javaversion", mavenProjectJavaVersion);
+    jc.addCommand("javaversion", new MavenProjectJavaVersion());
 
     try {
       jc.parse(args);
